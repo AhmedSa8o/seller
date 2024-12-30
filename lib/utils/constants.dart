@@ -15,8 +15,11 @@ const Color tabBgColor = Color(0xFFF5F6F9);
 
 const kDuration = Duration(milliseconds: 300);
 
-
 const Color bgColor = Color(0xFFF7F7F7);
 const Color transparent = Colors.transparent;
 
 const double defaultPadding = 20.0;
+
+class SpecificationKeys {
+  static const List<String> allowedKeys = ['color', 'size'];
+}

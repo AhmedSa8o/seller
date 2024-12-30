@@ -13,6 +13,9 @@ abstract class StoreProductRepository {
       String token);
 
   Future<Either<Failure, String>> updateProductStatus(String id, String token);
+  
+  // Add the new method to the abstract class
+  Future<Either<Failure, List<SpecificationModel>>> getSpecificationKeys(String token);
 }
 
 class StoreProductRepositoryImpl implements StoreProductRepository {
@@ -50,6 +53,16 @@ class StoreProductRepositoryImpl implements StoreProductRepository {
     try {
       final status = await remoteDataSources.updateProductStatus(id, token);
       return right(status);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<SpecificationModel>>> getSpecificationKeys(String token) async {
+    try {
+      final result = await remoteDataSources.getSpecificationKeys(token);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));
     }

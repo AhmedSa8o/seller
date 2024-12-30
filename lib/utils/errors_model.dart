@@ -14,6 +14,10 @@ class Errors extends Equatable {
   final List<String> subject;
   final List<String> message;
   final List<String> review;
+  final List<String> shortNameAr; // Added
+  final List<String> nameAr; // Added
+  final List<String> shortDescriptionAr; // Added
+  final List<String> longDescriptionAr; // Added
 
   final List<String> shortName;
   final List<String> name;
@@ -65,6 +69,10 @@ class Errors extends Equatable {
     required this.zipCode,
     required this.openAt,
     required this.closedAt,
+    required this.shortDescriptionAr,
+    required this.longDescriptionAr,
+    required this.shortNameAr,
+    required this.nameAr,
     required this.greeting,
     required this.methodId,
     required this.withdrawAmount,
@@ -100,6 +108,10 @@ class Errors extends Equatable {
     List<String>? openAt,
     List<String>? closedAt,
     List<String>? greeting,
+    List<String>? nameAr,
+    List<String>? shortNameAr,
+    List<String>? longDescriptionAr,
+    List<String>? shortDescriptionAr,
     List<String>? methodId,
     List<String>? withdrawAmount,
     List<String>? accountInfo,
@@ -136,6 +148,10 @@ class Errors extends Equatable {
       methodId: methodId ?? this.methodId,
       withdrawAmount: withdrawAmount ?? this.withdrawAmount,
       accountInfo: accountInfo ?? this.accountInfo,
+      shortDescriptionAr: shortDescriptionAr ?? this.shortDescriptionAr,
+      longDescriptionAr: longDescriptionAr ?? this.longDescriptionAr,
+      shortNameAr: shortNameAr ?? this.shortNameAr,
+      nameAr: nameAr ?? this.nameAr,
     );
   }
 
@@ -148,6 +164,10 @@ class Errors extends Equatable {
       'address': address,
       'country': country,
       'state': state,
+      'name_ar': nameAr,
+      'short_name_ar': shortNameAr,
+      'long_description_ar': longDescriptionAr,
+      'short_description_ar': shortDescriptionAr,
       'city': city,
       'subject': subject,
       'message': message,
@@ -269,6 +289,18 @@ class Errors extends Equatable {
           : [],
       accountInfo: map['account_info'] != null
           ? List<String>.from(map['account_info'].map((x) => x))
+          : [],
+      nameAr: map['name_ar'] != null
+          ? List<String>.from(map['name_ar'].map((x) => x))
+          : [],
+      shortNameAr: map['short_name_ar'] != null
+          ? List<String>.from(map['short_name_ar'].map((x) => x))
+          : [],
+      longDescriptionAr: map['long_description_ar'] != null
+          ? List<String>.from(map['long_description_ar'].map((x) => x))
+          : [],
+      shortDescriptionAr: map['short_description_ar'] != null
+          ? List<String>.from(map['short_description_ar'].map((x) => x))
           : [],
     );
   }

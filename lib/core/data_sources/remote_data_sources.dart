@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:seller_app/core/errors/exception.dart';
 
 import '../../dependency_injection_packages.dart';
 import '../../modules/on_boarding/model/website_setup_model.dart';
@@ -13,6 +15,7 @@ abstract class RemoteDataSources {
   Future<UserResponseModel> login(Map<String, dynamic> body);
 
   Future<String> logout(String token);
+  Future<List<SpecificationModel>> getSpecificationKeys(String token);
 
   Future<WebsiteSetupModel> getSetting();
 
@@ -289,12 +292,31 @@ class RemoteDataSourcesImpl implements RemoteDataSources {
   @override
   Future<String> storeProduct(StoreProductStateModel body, String token) async {
     final url = Uri.parse(RemoteUrls.storeProduct(token));
-    //final clientMethod = client.post(url, headers: headers, body: body);
-
     final request = http.MultipartRequest('POST', url);
-    request.fields.addAll(body.toMap());
 
+    // Convert the dynamic map to string map for fields
+    final bodyMap = body.toMap();
+    final fieldsMap = <String, String>{};
+
+    bodyMap.forEach((key, value) {
+      if (value != null) {
+        // Convert any non-string values to string
+        if (value is List) {
+          // Handle specifications arrays
+          if (key == 'keys' || key == 'specifications') {
+            for (var i = 0; i < value.length; i++) {
+              fieldsMap['$key[$i]'] = value[i].toString();
+            }
+          }
+        } else {
+          fieldsMap[key] = value.toString();
+        }
+      }
+    });
+
+    request.fields.addAll(fieldsMap);
     request.headers.addAll(postHeader);
+
     if (body.thumbImage.isNotEmpty) {
       final file =
           await http.MultipartFile.fromPath('thumb_image', body.thumbImage);
@@ -345,15 +367,21 @@ class RemoteDataSourcesImpl implements RemoteDataSources {
     final url = Uri.parse(RemoteUrls.updateSingleProduct(id, token));
     final headers = {
       'Accept': 'application/json',
-      // 'Content-Type': 'application/json'
       'Content-Type': 'application/x-www-form-urlencoded',
       'X-Requested-With': 'XMLHttpRequest',
     };
-    // final clientMethod = client.put(url, headers: headers,body: body);
-    final request = http.MultipartRequest('POST', url);
-    request.fields.addAll(body.toMap());
 
+    final request = http.MultipartRequest('POST', url);
+
+    // Convert the Map<String, dynamic> to Map<String, String>
+    final Map<String, dynamic> dynamicMap = body.toMap();
+    final Map<String, String> stringMap = dynamicMap.map(
+      (key, value) => MapEntry(key, value?.toString() ?? ''),
+    );
+
+    request.fields.addAll(stringMap);
     request.headers.addAll(headers);
+
     if (body.thumbImage.isNotEmpty) {
       final file =
           await http.MultipartFile.fromPath('thumb_image', body.thumbImage);
@@ -884,5 +912,25 @@ class RemoteDataSourcesImpl implements RemoteDataSources {
         await NetworkParser.callClientWithCatchException(() => clientMethod);
 
     return responseBody as String;
+  }
+
+  @override
+  Future<List<SpecificationModel>> getSpecificationKeys(String token) async {
+    final url = Uri.parse(RemoteUrls.getAllCategoryAndBrands(token));
+    final callClientMethod = client.get(url, headers: defaultHeader);
+    final response = await NetworkParser.callClientWithCatchException(
+        () => callClientMethod);
+
+    final responseMap = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      final specList = responseMap['specification_keys'] as List;
+      return specList.map((spec) => SpecificationModel.fromMap(spec)).toList();
+    } else {
+      throw ServerException(
+        responseMap['message'] ?? 'Error occurred',
+        response.statusCode,
+      );
+    }
   }
 }

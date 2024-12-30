@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
-
 import '../../../dashboard/model/seller_model/seller_model.dart';
 import '../brand_model/brand_model.dart';
 import '../category_model/category_model.dart';
@@ -9,7 +7,9 @@ import '../category_model/category_model.dart';
 class SingleProductModel extends Equatable {
   final int id;
   final String name;
+  final String nameAr;
   final String shortName;
+  final String shortNameAr;
   final String slug;
   final String thumbImage;
   final int vendorId;
@@ -21,7 +21,10 @@ class SingleProductModel extends Equatable {
   final String weight;
   final int soldQty;
   final String shortDescription;
+  final String shortDescriptionAr;
   final String longDescription;
+  final List<ProductSpecification>? productSpecifications;
+  final String longDescriptionAr;
   final String videoLink;
   final String sku;
   final String seoTitle;
@@ -45,15 +48,19 @@ class SingleProductModel extends Equatable {
   final CategoryModel? category;
   final SellerModel? seller;
   final BrandModel? brand;
+  final List<ProductSpecification>? specifications;
 
   const SingleProductModel({
     required this.id,
     required this.name,
+    this.nameAr = '',
     required this.shortName,
+    this.shortNameAr = '',
     required this.slug,
     required this.thumbImage,
     required this.vendorId,
     required this.categoryId,
+    this.productSpecifications, // Changed from specifications
     required this.subCategoryId,
     required this.childCategoryId,
     required this.brandId,
@@ -61,7 +68,9 @@ class SingleProductModel extends Equatable {
     required this.weight,
     required this.soldQty,
     required this.shortDescription,
+    this.shortDescriptionAr = '',
     required this.longDescription,
+    this.longDescriptionAr = '',
     required this.videoLink,
     required this.sku,
     required this.seoTitle,
@@ -85,12 +94,15 @@ class SingleProductModel extends Equatable {
     required this.category,
     required this.seller,
     required this.brand,
+    this.specifications,
   });
 
   SingleProductModel copyWith({
     int? id,
     String? name,
+    String? nameAr,
     String? shortName,
+    String? shortNameAr,
     String? slug,
     String? thumbImage,
     int? vendorId,
@@ -100,9 +112,13 @@ class SingleProductModel extends Equatable {
     int? brandId,
     int? qty,
     String? weight,
+    List<ProductSpecification>? productSpecifications, // Changed parameter name
+
     int? soldQty,
     String? shortDescription,
+    String? shortDescriptionAr,
     String? longDescription,
+    String? longDescriptionAr,
     String? videoLink,
     String? sku,
     String? seoTitle,
@@ -126,11 +142,17 @@ class SingleProductModel extends Equatable {
     CategoryModel? category,
     SellerModel? seller,
     BrandModel? brand,
+    List<ProductSpecification>? specifications,
   }) {
     return SingleProductModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      nameAr: nameAr ?? this.nameAr,
+      productSpecifications:
+          productSpecifications ?? this.productSpecifications, // Updated name
+
       shortName: shortName ?? this.shortName,
+      shortNameAr: shortNameAr ?? this.shortNameAr,
       slug: slug ?? this.slug,
       thumbImage: thumbImage ?? this.thumbImage,
       vendorId: vendorId ?? this.vendorId,
@@ -142,7 +164,9 @@ class SingleProductModel extends Equatable {
       weight: weight ?? this.weight,
       soldQty: soldQty ?? this.soldQty,
       shortDescription: shortDescription ?? this.shortDescription,
+      shortDescriptionAr: shortDescriptionAr ?? this.shortDescriptionAr,
       longDescription: longDescription ?? this.longDescription,
+      longDescriptionAr: longDescriptionAr ?? this.longDescriptionAr,
       videoLink: videoLink ?? this.videoLink,
       sku: sku ?? this.sku,
       seoTitle: seoTitle ?? this.seoTitle,
@@ -166,6 +190,7 @@ class SingleProductModel extends Equatable {
       category: category ?? this.category,
       seller: seller ?? this.seller,
       brand: brand ?? this.brand,
+      specifications: specifications ?? this.specifications,
     );
   }
 
@@ -173,7 +198,9 @@ class SingleProductModel extends Equatable {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'name_ar': nameAr,
       'short_name': shortName,
+      'short_name_ar': shortNameAr,
       'slug': slug,
       'thumb_image': thumbImage,
       'vendor_id': vendorId,
@@ -185,7 +212,13 @@ class SingleProductModel extends Equatable {
       'weight': weight,
       'sold_qty': soldQty,
       'short_description': shortDescription,
+      'short_description_ar': shortDescriptionAr,
       'long_description': longDescription,
+      'long_description_ar': longDescriptionAr,
+      'specifications': productSpecifications
+          ?.map((x) => x.toMap())
+          .toList(), // Keep API name as 'specifications'
+
       'video_link': videoLink,
       'sku': sku,
       'seo_title': seoTitle,
@@ -206,9 +239,10 @@ class SingleProductModel extends Equatable {
       'updated_at': updatedAt,
       'averageRating': averageRating,
       'totalSold': totalSold,
-      'category': category!.toMap(),
-      'seller': seller!.toMap(),
-      'brand': brand!.toMap(),
+      'category': category?.toMap(),
+      'seller': seller?.toMap(),
+      'brand': brand?.toMap(),
+      'specifications': specifications?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -216,7 +250,9 @@ class SingleProductModel extends Equatable {
     return SingleProductModel(
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
+      nameAr: map['name_ar'] ?? '',
       shortName: map['short_name'] ?? '',
+      shortNameAr: map['short_name_ar'] ?? '',
       slug: map['slug'] ?? '',
       thumbImage: map['thumb_image'] ?? '',
       vendorId:
@@ -237,7 +273,9 @@ class SingleProductModel extends Equatable {
       soldQty:
           map['sold_qty'] != null ? int.parse(map['sold_qty'].toString()) : 0,
       shortDescription: map['short_description'] ?? '',
+      shortDescriptionAr: map['short_description_ar'] ?? '',
       longDescription: map['long_description'] ?? '',
+      longDescriptionAr: map['long_description_ar'] ?? '',
       videoLink: map['video_link'] ?? '',
       sku: map['sku'] ?? '',
       seoTitle: map['seo_title'] ?? '',
@@ -276,13 +314,17 @@ class SingleProductModel extends Equatable {
       totalSold:
           map['totalSold'] != null ? int.parse(map['totalSold'].toString()) : 0,
       category: map['category'] != null
-          ? CategoryModel.fromMap(map['category'] as Map<String, dynamic>)
+          ? CategoryModel.fromMap(map['category'])
           : null,
-      seller: map['seller'] != null
-          ? SellerModel.fromMap(map['seller'] as Map<String, dynamic>)
+      seller: map['seller'] != null ? SellerModel.fromMap(map['seller']) : null,
+      brand: map['brand'] != null ? BrandModel.fromMap(map['brand']) : null,
+      specifications: map['specifications'] != null
+          ? List<ProductSpecification>.from((map['specifications'] as List)
+              .map((x) => ProductSpecification.fromMap(x)))
           : null,
-      brand: map['brand'] != null
-          ? BrandModel.fromMap(map['brand'] as Map<String, dynamic>)
+      productSpecifications: map['specifications'] != null
+          ? List<ProductSpecification>.from((map['specifications'] as List)
+              .map((x) => ProductSpecification.fromMap(x)))
           : null,
     );
   }
@@ -300,7 +342,9 @@ class SingleProductModel extends Equatable {
     return [
       id,
       name,
+      nameAr,
       shortName,
+      shortNameAr,
       slug,
       thumbImage,
       vendorId,
@@ -312,7 +356,9 @@ class SingleProductModel extends Equatable {
       weight,
       soldQty,
       shortDescription,
+      shortDescriptionAr,
       longDescription,
+      longDescriptionAr,
       videoLink,
       sku,
       seoTitle,
@@ -325,6 +371,7 @@ class SingleProductModel extends Equatable {
       isFeatured,
       newProduct,
       isTop,
+      if (productSpecifications != null) ...productSpecifications!,
       isBest,
       status,
       isSpecification,
@@ -333,9 +380,42 @@ class SingleProductModel extends Equatable {
       updatedAt,
       averageRating,
       totalSold,
-      category!,
-      seller!,
-      //brand!,
+      if (category != null) category!,
+      if (seller != null) seller!,
+      if (brand != null) brand!,
+      if (specifications != null) ...specifications!,
     ];
+  }
+}
+
+class ProductSpecification {
+  final int? id;
+  final int? keyId;
+  final String key;
+  final String value;
+
+  ProductSpecification({
+    this.id,
+    this.keyId,
+    required this.key,
+    required this.value,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'key_id': keyId,
+      'key': key,
+      'specification': value,
+    };
+  }
+
+  factory ProductSpecification.fromMap(Map<String, dynamic> map) {
+    return ProductSpecification(
+      id: map['id']?.toInt(),
+      keyId: map['product_specification_key_id']?.toInt(),
+      key: map['key'] ?? '',
+      value: map['specification'] ?? '',
+    );
   }
 }

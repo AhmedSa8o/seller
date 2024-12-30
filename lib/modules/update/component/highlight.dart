@@ -34,7 +34,7 @@ class Highlight extends StatelessWidget {
                   onChanged: (bool? val) {
                     if (val != null) {
                       isTop = isTop == '0' ? '1' : '0';
-                      update.add(UpdateProductEventTopProduct(isTop));
+                      update.add(UpdateProductEventTop(isTop));
                     }
                   },
                 ),

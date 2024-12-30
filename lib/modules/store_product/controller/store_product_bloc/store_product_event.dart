@@ -79,6 +79,38 @@ class StoreProductEventWeight extends StoreProductEvent {
   List<Object?> get props => [weight];
 }
 
+class StoreProductEventShortNameAr extends StoreProductEvent {
+  final String shortNameAr;
+  const StoreProductEventShortNameAr(this.shortNameAr);
+
+  @override
+  List<Object?> get props => [shortNameAr];
+}
+
+class StoreProductEventNameAr extends StoreProductEvent {
+  final String nameAr;
+  const StoreProductEventNameAr(this.nameAr);
+
+  @override
+  List<Object?> get props => [nameAr];
+}
+
+class StoreProductEventShortDesAr extends StoreProductEvent {
+  final String shortDescriptionAr;
+  const StoreProductEventShortDesAr(this.shortDescriptionAr);
+
+  @override
+  List<Object?> get props => [shortDescriptionAr];
+}
+
+class StoreProductEventLongDesAr extends StoreProductEvent {
+  final String longDescriptionAr;
+  const StoreProductEventLongDesAr(this.longDescriptionAr);
+
+  @override
+  List<Object?> get props => [longDescriptionAr];
+}
+
 class StoreProductEventShortDes extends StoreProductEvent {
   final String shortDescription;
 
@@ -114,7 +146,6 @@ class StoreProductEventStatus extends StoreProductEvent {
   @override
   List<Object?> get props => [id];
 }
-
 
 class StoreProductEventTags extends StoreProductEvent {
   final String tags;
@@ -169,6 +200,7 @@ class StoreProductEventNewProduct extends StoreProductEvent {
   @override
   List<Object?> get props => [newProduct];
 }
+
 class StoreProductEventBest extends StoreProductEvent {
   final String isBest;
 
@@ -177,6 +209,7 @@ class StoreProductEventBest extends StoreProductEvent {
   @override
   List<Object?> get props => [isBest];
 }
+
 class StoreProductEventFeature extends StoreProductEvent {
   final String isFeatured;
 
@@ -185,6 +218,13 @@ class StoreProductEventFeature extends StoreProductEvent {
   @override
   List<Object?> get props => [isFeatured];
 }
+
+class StoreProductEventSpecifications extends StoreProductEvent {
+  final List<ProductSpecification> specifications;
+
+  const StoreProductEventSpecifications(this.specifications);
+}
+
 class StoreProductEventSpecification extends StoreProductEvent {
   final String isSpecification;
 

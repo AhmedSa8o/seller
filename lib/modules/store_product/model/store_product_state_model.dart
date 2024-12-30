@@ -1,23 +1,23 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
-
-import '../controller/store_product_bloc/store_product_bloc.dart';
+import 'package:seller_app/modules/store_product/controller/store_product_bloc/store_product_bloc.dart';
 
 class StoreProductStateModel extends Equatable {
-// SingleProductModel singleProduct;
   final String thumbImage;
   final String shortName;
+  final String shortNameAr;
   final String name;
+  final String nameAr;
   final String slug;
-  final String category; //int to String
+  final String category;
   final String subCategory;
   final String childCategory;
   final String brand;
   final String quantity;
   final String weight;
   final String shortDescription;
+  final String shortDescriptionAr;
   final String longDescription;
+  final String longDescriptionAr;
   final String sku;
   final String seoTitle;
   final String seoDescription;
@@ -31,12 +31,16 @@ class StoreProductStateModel extends Equatable {
   final String isSpecification;
   final String status;
   final StoreProductState state;
+  final List<ProductSpecification> specifications;
 
   const StoreProductStateModel({
-    this.name = '',
-    this.shortName = '',
-    this.slug = '',
     this.thumbImage = '',
+    this.shortName = '',
+    this.specifications = const [], // Now uses List<ProductSpecification>
+    this.shortNameAr = '',
+    this.name = '',
+    this.nameAr = '',
+    this.slug = '',
     this.category = '1',
     this.subCategory = '',
     this.childCategory = '',
@@ -44,7 +48,9 @@ class StoreProductStateModel extends Equatable {
     this.quantity = '',
     this.weight = '',
     this.shortDescription = '',
+    this.shortDescriptionAr = '',
     this.longDescription = '',
+    this.longDescriptionAr = '',
     this.sku = '',
     this.seoTitle = '',
     this.seoDescription = '',
@@ -55,54 +61,50 @@ class StoreProductStateModel extends Equatable {
     this.newProduct = '0',
     this.isTop = '0',
     this.isBest = '0',
-    this.status = '1',
     this.isSpecification = '0',
+    this.status = '1',
     this.state = const StoreProductInitial(),
   });
 
   StoreProductStateModel copyWith({
-    int? id,
-    String? name,
-    String? shortName,
-    String? slug,
     String? thumbImage,
+    String? shortName,
+    String? shortNameAr,
+    String? name,
+    String? nameAr,
+    String? slug,
     String? category,
-    String? categoryId,
     String? subCategory,
     String? childCategory,
     String? brand,
     String? quantity,
     String? weight,
-    int? soldQty,
     String? shortDescription,
+    String? shortDescriptionAr,
     String? longDescription,
-    String? videoLink,
+    String? longDescriptionAr,
     String? sku,
     String? seoTitle,
     String? seoDescription,
     String? price,
     String? offerPrice,
     String? tags,
-    String? showHomepage,
-    String? isUndefine,
     String? isFeatured,
     String? newProduct,
+    List<ProductSpecification>? specifications,
     String? isTop,
     String? isBest,
-    String? status,
     String? isSpecification,
-    String? approveByAdmin,
-    String? createdAt,
-    String? updatedAt,
-    double? averageRating,
-    int? totalSold,
+    String? status,
     StoreProductState? state,
   }) {
     return StoreProductStateModel(
-      name: name ?? this.name,
-      shortName: shortName ?? this.shortName,
-      slug: slug ?? this.slug,
       thumbImage: thumbImage ?? this.thumbImage,
+      shortName: shortName ?? this.shortName,
+      shortNameAr: shortNameAr ?? this.shortNameAr,
+      name: name ?? this.name,
+      nameAr: nameAr ?? this.nameAr,
+      slug: slug ?? this.slug,
       category: category ?? this.category,
       subCategory: subCategory ?? this.subCategory,
       childCategory: childCategory ?? this.childCategory,
@@ -110,7 +112,9 @@ class StoreProductStateModel extends Equatable {
       quantity: quantity ?? this.quantity,
       weight: weight ?? this.weight,
       shortDescription: shortDescription ?? this.shortDescription,
+      shortDescriptionAr: shortDescriptionAr ?? this.shortDescriptionAr,
       longDescription: longDescription ?? this.longDescription,
+      longDescriptionAr: longDescriptionAr ?? this.longDescriptionAr,
       sku: sku ?? this.sku,
       seoTitle: seoTitle ?? this.seoTitle,
       seoDescription: seoDescription ?? this.seoDescription,
@@ -121,48 +125,21 @@ class StoreProductStateModel extends Equatable {
       newProduct: newProduct ?? this.newProduct,
       isTop: isTop ?? this.isTop,
       isBest: isBest ?? this.isBest,
-      status: status ?? this.status,
       isSpecification: isSpecification ?? this.isSpecification,
+      status: status ?? this.status,
+      specifications: specifications ?? this.specifications,
       state: state ?? this.state,
     );
   }
 
-  factory StoreProductStateModel.init(StoreProductStateModel storeProduct) {
-    return StoreProductStateModel(
-      name: storeProduct.name ?? '',
-      shortName: storeProduct.shortName ?? '',
-      slug: storeProduct.slug ?? '',
-      thumbImage: storeProduct.thumbImage ?? '',
-      category: storeProduct.category ?? '1',
-      subCategory: storeProduct.subCategory ?? '',
-      childCategory: storeProduct.childCategory ?? '',
-      brand: storeProduct.brand ?? '',
-      quantity: storeProduct.quantity ?? '',
-      weight: storeProduct.weight ?? '',
-      shortDescription: storeProduct.shortDescription ?? '',
-      longDescription: storeProduct.longDescription ?? '',
-      sku: storeProduct.sku ?? '',
-      seoTitle: storeProduct.seoTitle ?? '',
-      seoDescription: storeProduct.seoDescription ?? '',
-      price: storeProduct.price ?? '',
-      offerPrice: storeProduct.offerPrice ?? '',
-      tags: storeProduct.tags ?? '',
-      isFeatured: storeProduct.isFeatured ?? '',
-      newProduct: storeProduct.newProduct ?? '',
-      isTop: storeProduct.isTop ?? '',
-      isBest: storeProduct.isBest ?? '',
-      status: storeProduct.status ?? '',
-      isSpecification: storeProduct.isSpecification ?? '',
-      state: const StoreProductInitial(),
-    );
-  }
-
-  Map<String, String> toMap() {
-    return <String, String>{
-      'name': name,
-      'short_name': shortName,
-      'slug': slug,
+  Map<String, dynamic> toMap() {
+    final baseMap = <String, String>{
       'thumb_image': thumbImage,
+      'short_name': shortName,
+      'short_name_ar': shortNameAr,
+      'name': name,
+      'name_ar': nameAr,
+      'slug': slug,
       'category': category,
       'sub_category': subCategory,
       'child_category': childCategory,
@@ -170,7 +147,9 @@ class StoreProductStateModel extends Equatable {
       'quantity': quantity,
       'weight': weight,
       'short_description': shortDescription,
+      'short_description_ar': shortDescriptionAr,
       'long_description': longDescription,
+      'long_description_ar': longDescriptionAr,
       'sku': sku,
       'seo_title': seoTitle,
       'seo_description': seoDescription,
@@ -184,114 +163,137 @@ class StoreProductStateModel extends Equatable {
       'status': status,
       'is_specification': isSpecification,
     };
-  }
+    if (isSpecification == '1') {
+      // Convert to the format expected by your backend
+      final List<String> keys =
+          specifications.map((spec) => spec.keyId.toString()).toList();
+      final List<String> values =
+          specifications.map((spec) => spec.value).toList();
+      return {
+        ...baseMap,
+        'keys': keys,
+        'specifications': values,
+      };
+    }
 
-  StoreProductStateModel clear() {
-    return const StoreProductStateModel(
-      name: '',
-      shortName: '',
-      slug: '',
-      thumbImage: '',
-      category: '1',
-      subCategory: '',
-      childCategory: '',
-      brand: '',
-      quantity: '',
-      weight: '',
-      shortDescription: '',
-      longDescription: '',
-      sku: '',
-      seoTitle: '',
-      seoDescription: '',
-      price: '',
-      offerPrice: '',
-      tags: '',
-      isFeatured: '0',
-      newProduct: '0',
-      isTop: '0',
-      isBest: '0',
-      status: '',
-      isSpecification: '0',
-      state: StoreProductInitial(),
-    );
+    return baseMap;
   }
 
   factory StoreProductStateModel.fromMap(Map<String, dynamic> map) {
     return StoreProductStateModel(
-      name: map['name'] ?? '',
-      shortName: map['short_name'] ?? '',
-      slug: map['slug'] ?? '',
       thumbImage: map['thumb_image'] ?? '',
+      shortName: map['short_name'] ?? '',
+      shortNameAr: map['short_name_ar'] ?? '',
+      name: map['name'] ?? '',
+      nameAr: map['name_ar'] ?? '',
+      slug: map['slug'] ?? '',
       category: map['category'] ?? '1',
       subCategory: map['sub_category'] ?? '',
       childCategory: map['child_category'] ?? '',
       brand: map['brand'] ?? '',
-      quantity: map['quantity'],
+      quantity: map['quantity'] ?? '',
       weight: map['weight'] ?? '',
       shortDescription: map['short_description'] ?? '',
+      shortDescriptionAr: map['short_description_ar'] ?? '',
       longDescription: map['long_description'] ?? '',
+      longDescriptionAr: map['long_description_ar'] ?? '',
       sku: map['sku'] ?? '',
       seoTitle: map['seo_title'] ?? '',
       seoDescription: map['seo_description'] ?? '',
       price: map['price'] ?? '',
       offerPrice: map['offer_price'] ?? '',
       tags: map['tags'] ?? '',
-      isFeatured: map['is_featured'] ?? '',
-      newProduct: map['new_product'] ?? '',
-      isTop: map['is_top'] ?? '',
-      isBest: map['is_best'] ?? '',
-      status: map['status'] ?? '',
-      isSpecification: map['is_specification'] ?? '',
+      isFeatured: map['is_featured'] ?? '0',
+      newProduct: map['new_product'] ?? '0',
+      isTop: map['is_top'] ?? '0',
+      isBest: map['is_best'] ?? '0',
+      status: map['status'] ?? '1',
+      isSpecification: map['is_specification'] ?? '0',
+      specifications: map['specifications'] != null
+          ? List<ProductSpecification>.from((map['specifications'] as List)
+              .map((x) => ProductSpecification.fromMap(x)))
+          : [],
       state: const StoreProductInitial(),
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory StoreProductStateModel.fromJson(String source) =>
-      StoreProductStateModel.fromMap(
-          json.decode(source) as Map<String, dynamic>);
-
-  @override
-  bool get stringify => true;
+  StoreProductStateModel clear() {
+    return const StoreProductStateModel();
+  }
 
   @override
   List<Object> get props {
     return [
       thumbImage,
       shortName,
+      shortNameAr,
       name,
+      nameAr,
       slug,
       category,
       subCategory,
       childCategory,
       brand,
-      sku,
-      price,
-      offerPrice,
       quantity,
-      shortDescription,
-      longDescription,
-      tags,
-      status,
       weight,
+      shortDescription,
+      shortDescriptionAr,
+      longDescription,
+      longDescriptionAr,
+      sku,
       seoTitle,
       seoDescription,
-      isTop,
-      newProduct,
-      isBest,
+      price,
+      offerPrice,
+      tags,
       isFeatured,
+      newProduct,
+      isTop,
+      isBest,
+      status,
       isSpecification,
+      specifications,
       state,
-      // soldQty,
-      // videoLink,
-      // showHomepage,
-      // isUndefine,
-      // approveByAdmin,
-      // createdAt,
-      // updatedAt,
-      // averageRating,
-      // totalSold,
     ];
+  }
+}
+
+class ProductSpecification {
+  final int? keyId;    // Make keyId nullable
+  final String key;
+  final String value;
+
+  ProductSpecification({
+    this.keyId,        // Remove required since it's nullable
+    required this.key,
+    required this.value,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'key_id': keyId,
+      'key': key,
+      'value': value,
+    };
+  }
+
+  factory ProductSpecification.fromMap(Map<String, dynamic> map) {
+    return ProductSpecification(
+      keyId: map['key_id'],  // No need for ?? 0 since keyId is nullable
+      key: map['key'] ?? '',
+      value: map['value'] ?? '',
+    );
+  }
+
+  ProductSpecification copyWith({
+    int? keyId,
+    String? key,
+    String? value,
+  }) {
+    return ProductSpecification(
+      keyId: keyId ?? this.keyId,
+      key: key ?? this.key,
+      value: value ?? this.value,
+    );
   }
 }

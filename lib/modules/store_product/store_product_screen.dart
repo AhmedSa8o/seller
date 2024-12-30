@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:seller_app/modules/store_product/controller/category_brand_cubit/category_brand_cubit.dart';
 
 import '/modules/store_product/component/get_category.dart';
 import '/modules/store_product/component/get_status.dart';
@@ -91,6 +92,29 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RequiredTextField(
+                        title: 'Short Name (Arabic)',
+                        initialValue: state.shortNameAr,
+                        onChange: (shortNameAr) {
+                          storeProduct
+                              .add(StoreProductEventShortNameAr(shortNameAr));
+                        }),
+                    if (s is StoreProductLoadFormValidate) ...[
+                      if (s.errors.shortNameAr.isNotEmpty)
+                        ErrorText(text: s.errors.shortNameAr.first)
+                    ]
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 16.0),
+
+            BlocBuilder<StoreProductBloc, StoreProductStateModel>(
+              builder: (context, state) {
+                final s = state.state;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RequiredTextField(
                         title: 'Name',
                         initialValue: state.name,
                         onChange: (name) {
@@ -106,6 +130,28 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
               },
             ),
             const SizedBox(height: 16.0),
+            BlocBuilder<StoreProductBloc, StoreProductStateModel>(
+              builder: (context, state) {
+                final s = state.state;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RequiredTextField(
+                        title: 'Name (Arabic)',
+                        initialValue: state.nameAr,
+                        onChange: (nameAr) {
+                          storeProduct.add(StoreProductEventNameAr(nameAr));
+                        }),
+                    if (s is StoreProductLoadFormValidate) ...[
+                      if (s.errors.nameAr.isNotEmpty)
+                        ErrorText(text: s.errors.nameAr.first)
+                    ]
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 16.0),
+
             BlocBuilder<StoreProductBloc, StoreProductStateModel>(
               builder: (context, state) {
                 final s = state.state;
@@ -219,6 +265,52 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    BlocBuilder<StoreProductBloc, StoreProductStateModel>(
+                      builder: (context, state) {
+                        final s = state.state;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Short Description (Arabic)',
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14.0),
+                                  ),
+                                  const TextSpan(
+                                      text: ' *',
+                                      style: TextStyle(color: redColor))
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            SizedBox(
+                              height: 110.0,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  hintText: 'Short Description (Arabic)',
+                                  alignLabelWithHint: true,
+                                ),
+                                onChanged: (desAr) {
+                                  storeProduct
+                                      .add(StoreProductEventShortDesAr(desAr));
+                                },
+                                initialValue: state.shortDescriptionAr,
+                                maxLines: 6,
+                              ),
+                            ),
+                            if (s is StoreProductLoadFormValidate) ...[
+                              if (s.errors.shortDescriptionAr.isNotEmpty)
+                                ErrorText(
+                                    text: s.errors.shortDescriptionAr.first)
+                            ]
+                          ],
+                        );
+                      },
+                    ),
                     Text.rich(
                       TextSpan(
                         children: [
@@ -264,6 +356,53 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 8.0),
+                    BlocBuilder<StoreProductBloc, StoreProductStateModel>(
+                      builder: (context, state) {
+                        final s = state.state;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Long Description (Arabic)',
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14.0),
+                                  ),
+                                  const TextSpan(
+                                      text: ' *',
+                                      style: TextStyle(color: redColor))
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            SizedBox(
+                              height: 110.0,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  hintText: 'Long Description (Arabic)',
+                                  alignLabelWithHint: true,
+                                ),
+                                onChanged: (longDesAr) {
+                                  storeProduct.add(
+                                      StoreProductEventLongDesAr(longDesAr));
+                                },
+                                initialValue: state.longDescriptionAr,
+                                maxLines: 10,
+                              ),
+                            ),
+                            if (s is StoreProductLoadFormValidate) ...[
+                              if (s.errors.longDescriptionAr.isNotEmpty)
+                                ErrorText(
+                                    text: s.errors.longDescriptionAr.first)
+                            ]
+                          ],
+                        );
+                      },
+                    ),
                     Text.rich(
                       TextSpan(
                         children: [
@@ -277,7 +416,6 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8.0),
                     SizedBox(
                       height: 110.0,
                       child: TextFormField(
@@ -436,21 +574,28 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
             ),
             const SizedBox(height: 20.0),
             ////
+
+// In your UI, after the Switch widget:
             BlocBuilder<StoreProductBloc, StoreProductStateModel>(
               builder: (context, state) {
-                String isSpecification = state.isSpecification;
-                return Row(
+                return Column(
                   children: [
-                    Switch(
-                        activeColor: Utils.dynamicPrimaryColor(context),
-                        value: isSpecification == '0' ? false : true,
-                        onChanged: (bool? val) {
-                          isSpecification = isSpecification == '0' ? '1' : '0';
-                          storeProduct.add(
-                              StoreProductEventSpecification(isSpecification));
-                          print('isSpecification : $isSpecification');
-                        }),
-                    const Text('Specification'),
+                    Row(
+                      children: [
+                        Switch(
+                            activeColor: Utils.dynamicPrimaryColor(context),
+                            value: state.isSpecification == '1',
+                            onChanged: (bool? val) {
+                              final newValue = val! ? '1' : '0';
+                              context.read<StoreProductBloc>().add(
+                                    StoreProductEventSpecification(newValue),
+                                  );
+                            }),
+                        const Text('المواصفات'),
+                      ],
+                    ),
+                    // Add the SpecificationsSection here
+                    const SpecificationsSection(),
                   ],
                 );
               },
@@ -477,6 +622,140 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class SpecificationsSection extends StatelessWidget {
+  const SpecificationsSection({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<StoreProductBloc, StoreProductStateModel>(
+      builder: (context, state) {
+        final specificationKeys = context
+            .read<CategoryBrandCubit>()
+            .categoryBrandModel
+            .specificationKey;
+
+        if (state.isSpecification != '1') return const SizedBox();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            Text(
+              'المواصفات',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.specifications.length,
+              itemBuilder: (context, index) {
+                final spec = state.specifications[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<int>(
+                            value: spec.keyId,
+                            hint: const Text('اختر المواصفة'),
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 12),
+                            ),
+                            items: specificationKeys.map((specKey) {
+                              return DropdownMenuItem(
+                                value: specKey.id,
+                                child: Text(specKey.key),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                final newSpecs =
+                                    List<ProductSpecification>.from(
+                                        state.specifications);
+                                newSpecs[index] = ProductSpecification(
+                                  keyId: value,
+                                  key: specificationKeys
+                                      .firstWhere(
+                                          (element) => element.id == value)
+                                      .key,
+                                  value: spec.value,
+                                );
+                                // Correct way to add the event
+                                context.read<StoreProductBloc>().add(
+                                    StoreProductEventSpecifications(newSpecs));
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextFormField(
+                            initialValue: spec.value,
+                            decoration: const InputDecoration(
+                              hintText: 'أدخل القيمة',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) {
+                              final newSpecs = List<ProductSpecification>.from(
+                                  state.specifications);
+                              newSpecs[index] = spec.copyWith(value: value);
+                              // Correct way to add the event
+                              context.read<StoreProductBloc>().add(
+                                  StoreProductEventSpecifications(newSpecs));
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.remove_circle_outline,
+                              color: Colors.red),
+                          onPressed: () {
+                            final newSpecs = List<ProductSpecification>.from(
+                                state.specifications);
+                            newSpecs.removeAt(index);
+                            // Correct way to add the event
+                            context
+                                .read<StoreProductBloc>()
+                                .add(StoreProductEventSpecifications(newSpecs));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+// When adding a new specification
+            ElevatedButton.icon(
+              onPressed: () {
+                final newSpecs =
+                    List<ProductSpecification>.from(state.specifications);
+                newSpecs.add(ProductSpecification(
+                  keyId: null, // Now this is valid since keyId is nullable
+                  key: '',
+                  value: '',
+                ));
+                context
+                    .read<StoreProductBloc>()
+                    .add(StoreProductEventSpecifications(newSpecs));
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('إضافة مواصفة'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

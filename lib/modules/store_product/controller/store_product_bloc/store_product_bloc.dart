@@ -28,6 +28,24 @@ class StoreProductBloc extends Bloc<StoreProductEvent, StoreProductStateModel> {
     on<StoreProductEventShortName>((event, emit) {
       emit(state.copyWith(shortName: event.shortName));
     });
+
+    // Add handlers for Arabic fields
+    on<StoreProductEventShortNameAr>((event, emit) {
+      emit(state.copyWith(shortNameAr: event.shortNameAr));
+    });
+
+    on<StoreProductEventNameAr>((event, emit) {
+      emit(state.copyWith(nameAr: event.nameAr));
+    });
+
+    on<StoreProductEventShortDesAr>((event, emit) {
+      emit(state.copyWith(shortDescriptionAr: event.shortDescriptionAr));
+    });
+
+    on<StoreProductEventLongDesAr>((event, emit) {
+      emit(state.copyWith(longDescriptionAr: event.longDescriptionAr));
+    });
+
     on<StoreProductEventName>((event, emit) {
       emit(state.copyWith(name: event.name));
     });
@@ -96,6 +114,10 @@ class StoreProductBloc extends Bloc<StoreProductEvent, StoreProductStateModel> {
       emit(state.copyWith(isSpecification: event.isSpecification));
     });
     ////end
+    // Add this new event handler
+    on<StoreProductEventSpecifications>((event, emit) {
+      emit(state.copyWith(specifications: event.specifications));
+    });
 
     on<StoreProductSubmitEvent>(_storeProductSubmit);
     on<StoreProductUpdateStatusEvent>(_updateProductStatus);
@@ -125,7 +147,6 @@ class StoreProductBloc extends Bloc<StoreProductEvent, StoreProductStateModel> {
         final success = StoreProductLoaded(stored);
         emit(state.copyWith(state: success));
         emit(state.clear());
-
       },
     );
   }
